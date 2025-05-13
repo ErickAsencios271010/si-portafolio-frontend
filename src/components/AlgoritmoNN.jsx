@@ -3,8 +3,8 @@ import axios from "axios";
 
 const AlgoritmoNN = () => {
   const [params, setParams] = useState({
-    w_ih: [[0.1, 0.2], [0.3, 0.4]], // Pesos de entrada a oculta
-    w_ho: [0.5, 0.6],               // Pesos de oculta a salida
+    w_ih: [[0.1, 0.2], [0.3, 0.4]],
+    w_ho: [0.5, 0.6],
     dataset: [
       { x: [0.0, 0.0], y: 0 },
       { x: [0.0, 1.0], y: 1 },
@@ -25,29 +25,32 @@ const AlgoritmoNN = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:5000/run-genetic", params);
-      setResults(response.data.final);
+      const response = await axios.post("http://localhost:5000/run-nn", params);
+      setResults(response.data.final); // Save the results from the response
     } catch (error) {
-      console.error("Error ejecutando la red neuronal:", error);
+      console.error("Error ejecutando el algoritmo de Red Neuronal:", error);
     }
   };
 
   return (
     <div className="algoritmo-container">
       <h2>Red Neuronal</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="number"
-          name="learning_rate"
-          value={params.learning_rate}
-          onChange={handleChange}
-          placeholder="Tasa de aprendizaje"
-        />
-        {/* Agregar más campos de pesos y dataset si es necesario */}
+      <form onSubmit={handleSubmit} className="form-container">
+        <div className="input-group">
+          <label>Pesos de la capa de entrada a capa oculta</label>
+          <input
+            type="text"
+            name="w_ih"
+            value={params.w_ih}
+            onChange={handleChange}
+            placeholder="Pesos capa entrada-oculta"
+          />
+        </div>
         <button type="submit">Ejecutar</button>
       </form>
+
       {results && (
-        <div>
+        <div className="results">
           <h3>Resultados</h3>
           <p>Pesos finales: {JSON.stringify(results.final_weights)}</p>
         </div>

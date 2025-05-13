@@ -5,6 +5,7 @@ const AlgoritmoNB = () => {
   const [params, setParams] = useState({
     test_size: 0.2,
     random_state: 42,
+    lowercase: true,
   });
   const [results, setResults] = useState(null);
 
@@ -18,39 +19,46 @@ const AlgoritmoNB = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:5000/run-genetic", params);
-      setResults(response.data.final);
+      const response = await axios.post("http://localhost:5000/run-naive-bayes", params);
+      setResults(response.data.final); // Save the results from the response
     } catch (error) {
-      console.error("Error ejecutando Naive Bayes:", error);
+      console.error("Error ejecutando el algoritmo Naive Bayes:", error);
     }
   };
 
   return (
     <div className="algoritmo-container">
       <h2>Naive Bayes</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="number"
-          name="test_size"
-          value={params.test_size}
-          onChange={handleChange}
-          placeholder="Tamaño de prueba"
-        />
-        <input
-          type="number"
-          name="random_state"
-          value={params.random_state}
-          onChange={handleChange}
-          placeholder="Estado aleatorio"
-        />
-        {/* Agregar más campos si es necesario */}
+      <form onSubmit={handleSubmit} className="form-container">
+        <div className="input-group">
+          <label>Tamaño del test</label>
+          <input
+            type="number"
+            name="test_size"
+            value={params.test_size}
+            onChange={handleChange}
+            step="0.01"
+            placeholder="Tamaño del test"
+          />
+        </div>
+        <div className="input-group">
+          <label>Estado aleatorio</label>
+          <input
+            type="number"
+            name="random_state"
+            value={params.random_state}
+            onChange={handleChange}
+            placeholder="Estado aleatorio"
+          />
+        </div>
         <button type="submit">Ejecutar</button>
       </form>
+
       {results && (
-        <div>
+        <div className="results">
           <h3>Resultados</h3>
           <p>Exactitud: {results.metrics.BernoulliNB.accuracy}</p>
-          {/* Muestra más métricas según se requiera */}
+          <p>Precisión: {results.metrics.BernoulliNB.precision}</p>
         </div>
       )}
     </div>
